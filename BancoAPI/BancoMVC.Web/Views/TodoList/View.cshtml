@@ -1,0 +1,53 @@
+﻿@using BancoMVC.Web.Models;
+@model ViewTodoListViewModel
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col @Model.ColorCssClasses">
+                <div class="fs-1">
+                    @Model.Name
+                </div>
+                <div class="fs-6 fst-italic">
+                    @Model.Description
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush">
+        @foreach (var task in Model.Tasks)
+        {
+            <li class="list-group-item">
+                <div class="row @(task.IsComplete ? "text-decoration-line-through" : "")">
+                    <div class="col-1 px-3 text-danger d-flex align-items-center" style="width: 44px;">
+                        @for (var i = 0; i < task.Priority; i++)
+                        {
+                            <span class="fas fa-exclamation"></span>
+                        }
+                    </div>
+                    <div class="col">
+                        @task.Description
+                    </div>
+                    <div class="col-1 d-flex align-items-center" style="width: 106px">
+                        <button class="btn btn-outline-success" type="button" data-action="toggleDone" data-task-id="@task.Id" data-todolist-id="@Model.Id">
+                            <span class="fas fa-check"></span>
+                        </button>
+                            @Html.ActionLink("Remove", "deleteTask", "TodoList", new { id = task.Id }, new { onclick = "return confirm('Are sure wants to delete?');" })
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+    <div class="input-group mt-3">
+        <form method="POST" action="@Url.Action("createTask", "TodoList", new {Id = Model.Id})">
+            <div class="input-group mt-3">
+                <input type="text" placeholder="Add a task" name="Task" aria-label="Add a task" aria-describedby="button-add-task">
+                <select class="Priority" id="Priority" name="Priority">
+                    <option value="1">Low Priority</option>
+                    <option value="2" selected>Normal Priority</option>
+                    <option value="3">High Priority</option>
+                </select>
+                <button type="submit">Add</button>
+        </form>
+    </div>
+</div>
